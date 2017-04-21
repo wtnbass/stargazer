@@ -12,20 +12,40 @@ export default class App extends React.Component {
   }
   componentDidMount() {
     this.load();
-    // scroll
+    this.clearInterval = setInterval(() => this.poll(), 5000);
+
     window.addEventListener('scroll', (e) => {
       const bottom = getScrollBottom();
       const {katsus} = this.state;
       if (bottom === 0) {
-        this.more(katsus[katsus.length-1].id)
+        this.more(katsus[katsus.length-1].id);
       }
-    })
+      this.poll();
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.clearInterval();
+  }
+
+  poll() {
+    if (document.body.scrollTop === 0) {
+      this.latest(this.state.katsus[0].id);
+    }
   }
 
   load() {
     api('timelines/public?local').then(data => this.setState({
       katsus: this.state.katsus.concat(data),
     }));
+  }
+
+  latest(since_id) {
+    api(`timelines/public?since_id=${since_id}&local`).then(data => this.setState({
+      katsus: data.concat(this.state.katsus)
+    }))
+
   }
 
   more(max_id) {
