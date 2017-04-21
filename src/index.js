@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-
-const App = () => <div>It works</div>;
+import App from './components/app';
 
 render(<App />, document.getElementById('root'));

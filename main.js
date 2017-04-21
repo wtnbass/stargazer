@@ -7,6 +7,13 @@ const createWindow = () => {
   win = new BrowserWindow();
   win.on('closed', () => win = null);
 
+  win.on('app-command', (e, cmd) => {
+    // Navigate the window back when the user hits their mouse back button
+    if (cmd === 'browser-backward' && win.webContents.canGoBack()) {
+      win.webContents.goBack()
+    }
+  })
+
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'views/index.html'),
     protocol: 'file:',
